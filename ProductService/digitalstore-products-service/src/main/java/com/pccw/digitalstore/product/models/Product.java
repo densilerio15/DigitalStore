@@ -11,6 +11,11 @@ public class Product {
 		super();
 	}
 	
+	public Product(String sku) {
+		super();
+		this.sku = sku;
+	}
+	
 	public Product(Long id, String sku) {
 		super();
 		this.id = id;

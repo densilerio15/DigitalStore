@@ -1,4 +1,4 @@
-package com.pccw.digitalstore.products;
+package com.pccw.digitalstore.product;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
