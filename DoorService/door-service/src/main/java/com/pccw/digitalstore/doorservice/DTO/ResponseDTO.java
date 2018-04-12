@@ -16,6 +16,11 @@ public class ResponseDTO{
 		this.door = door;
 		this.message =  "Door mock test";
 	}
+	public ResponseDTO(String serviceState,  Door  door, String message) {
+		this.serviceState = serviceState;
+		this.door = door;
+		this.message =  message;
+	}
 	public String  getServiceState() {
 		return  serviceState;
 	}

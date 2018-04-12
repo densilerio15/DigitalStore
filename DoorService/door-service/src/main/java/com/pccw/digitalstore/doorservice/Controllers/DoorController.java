@@ -18,14 +18,18 @@ public class DoorController{
 	@Autowired
 	DoorService doorService;
 
-	@GetMapping("/door/{doorid}/open")
+	@GetMapping("/{doorid}/open")
 	public ResponseDTO open(@PathVariable("doorid") String id){
-		return new ResponseDTO(doorService.openDoor(id)); 
+		String serviceStatus = "Up";
+		String message = "Mock Door is  open";
+		return new ResponseDTO(serviceStatus,doorService.openDoor(id),message); 
 	}
 	
-	@GetMapping("/door/{doorid}/close")
+	@GetMapping("/{doorid}/close")
 	public ResponseDTO  close(@PathVariable("doorid") String id){
-		return new ResponseDTO(doorService.closeDoor(id)); 
+		String serviceStatus = "Up";
+		String message = "Mock Door is close";
+		return new ResponseDTO( serviceStatus,doorService.closeDoor(id),message); 
 	}
 	
 	
