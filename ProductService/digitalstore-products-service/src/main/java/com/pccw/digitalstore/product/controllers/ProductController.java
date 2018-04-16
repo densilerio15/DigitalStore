@@ -85,9 +85,8 @@ public class ProductController {
 
 	@GetMapping("/recommendation/{userId}")
 	public ResponseDTO<List<Product>> getRecommendedProducts(@PathVariable Long userId) throws Exception {
-		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess,
+		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(
 				productService.getProductRecommendation(userId));
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
 		return responseDto;
 	}
 }

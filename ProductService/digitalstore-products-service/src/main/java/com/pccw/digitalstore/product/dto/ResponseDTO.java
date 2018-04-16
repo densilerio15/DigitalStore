@@ -3,11 +3,18 @@ package com.pccw.digitalstore.product.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ResponseDTO<T> {
 	
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Map<String, String> serviceStatus = new HashMap<>();
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String transactionStatus;
+	@JsonProperty("data")
 	private T object;
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Map<String, String> message = new HashMap<>();
 	
 	public ResponseDTO() {
@@ -26,6 +33,9 @@ public class ResponseDTO<T> {
 		this.object = object;
 	}
 	
+	public ResponseDTO(T object) {
+		this.object = object;
+	}	
 	public Map<String, String> getServiceStatus() {
 		return serviceStatus;
 	}
