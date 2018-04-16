@@ -1,0 +1,9 @@
+spring.application.name=digitalstore-product-service
+server.port=8888
+
+spring.h2.console.enabled=true
+spring.jackson.serialization.FAIL_ON_EMPTY_BEANS=false
+
+#eureka.client.service-url.default-zone=http://172.168.4.253:8761/eureka/
+eureka.client.service-url.default-zone=http://localhost:8761/eureka/
+

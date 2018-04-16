@@ -6,20 +6,22 @@ import com.pccw.digitalstore.product.models.Product;
 
 public interface ProductService {
 	
-	public Product saveProduct(Product product);
+	public Product saveProduct(Product product) throws Exception;
 	
-	public List<Product> saveProductBatch(List<Product> productList);
+	public List<Product> saveProductBatch(List<Product> productList) throws Exception;
 	
-	public Product getProduct(Long id);
+	public Product getProduct(Long id) throws Exception;
 	
-	public Product getProductBySku(String sku);
+	public Product getProductBySku(String sku) throws Exception;
 	
-	public List<Product> getAllProducts();
+	public List<Product> getProductRecommendation(Long userId) throws Exception;
 	
-	public Product updateWholeProduct(Long id, Product product);
+	public List<Product> getProductRecommendationByUserMetrix(Integer age, String Gender) throws Exception;
 	
-	public Product deleteProductById(Long id);
+	public List<Product> getAllProducts() throws Exception;
 	
-	public List<Product> getProductRecommendation(Long userId);
-
+	public Product updateWholeProduct(Long id, Product product) throws Exception;
+	
+	public boolean deleteProductById(Long id) throws Exception;
+	
 }

@@ -7,12 +7,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ResourceNotFoundException extends Exception {
 
 		private static final long serialVersionUID = -3332292346834265371L;
+		
+		public ResourceNotFoundException(){
+			super("Resource requested not found");
+		}
 
 		public ResourceNotFoundException(String key, Object id){
-			super("ResourceNotFoundException with " + key + " = " + id);
+			super("Resource requested not found with " + key + " = " + id);
 		}
 		
 		public ResourceNotFoundException(Long id){
-			super("ResourceNotFoundException with  id= " + id);
+			super("Resource requested not found with id = " + id);
 		}
 	}

@@ -1,4 +1,4 @@
-package com.pccw.ds.eureka.dseurekaserver;
+package com.pccw.digitalstore.eureka.server;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
