@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class WeightSensorApplication {
-//git test 2
 	public static void main(String[] args) {
 		SpringApplication.run(WeightSensorApplication.class, args);
 	}
