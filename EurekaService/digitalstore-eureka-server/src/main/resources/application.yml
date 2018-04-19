@@ -1,0 +1,15 @@
+spring:
+ application:
+  name: digitalstore-eureka-server
+
+server:
+ port: 8761
+ 
+eureka:
+ instance:
+  hostname: 172.168.4.253
+ client:
+  registerWithEureka: false
+  fetchRegistry: false
+  serviceUrl:
+   defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

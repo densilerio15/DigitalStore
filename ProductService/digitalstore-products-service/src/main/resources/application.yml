@@ -1,0 +1,15 @@
+spring:
+ application:
+  name: digitalstore-product-service
+ h2:
+  console:
+   enabled: true
+ jackson:
+  serialization:
+   FAIL_ON_EMPTY_BEANS: false
+ profiles:
+  active: development
+
+server:
+ port: 8888
+ 

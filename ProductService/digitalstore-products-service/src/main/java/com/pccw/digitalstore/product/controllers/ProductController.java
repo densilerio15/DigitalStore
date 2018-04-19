@@ -2,7 +2,6 @@ package com.pccw.digitalstore.product.controllers;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pccw.digitalstore.product.dto.ResponseDTO;
-import com.pccw.digitalstore.product.exception.ResourceNotFoundException;
 import com.pccw.digitalstore.product.models.Product;
-import com.pccw.digitalstore.product.repositories.ProductRepository;
+import com.pccw.digitalstore.product.services.ProductService;
 
 @RestController
 @RequestMapping("/products")
@@ -30,80 +28,65 @@ public class ProductController {
 	private final static String transactionStatusSuccess = "SUCCESS";
 	
 	@Autowired
-	ProductRepository productRepository;
+	ProductService productService;
 	
 	@PostMapping("/")
-	public Product createProduct(@RequestBody Product product) {
-		return productRepository.save(product);
+	public Product createProduct(@RequestBody Product product) throws Exception {
+		return productService.saveProduct(product);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseDTO<Product> getProduct(@PathVariable Long id) throws Exception {
-		Product returnProduct = productRepository.findById(id).map(obj -> {return obj;})
-																.orElseThrow(() -> new ResourceNotFoundException(id));
-		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess, returnProduct);
+		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess, productService.getProduct(id));
 		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
 		return responseDto;
 	}
 	
 	@GetMapping("/sku/{sku}")
 	public ResponseDTO<Product> getProductBySku(@PathVariable String sku) throws Exception {
-		Product returnProduct = productRepository.findBySku(sku);
-		if(returnProduct == null) {
-			throw new ResourceNotFoundException("sku", sku);
-		}
-		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess, productRepository.findBySku(sku));
+		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess,
+				productService.getProductBySku(sku));
 		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
 		return responseDto;
 	}
 	
 	
 	@GetMapping("/all")
-	public ResponseDTO<List<Product>> getAllProducts() {
-		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess, productRepository.findAll());
+	public ResponseDTO<List<Product>> getAllProducts() throws Exception {
+		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess,
+				productService.getAllProducts());
 		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
 		return responseDto;
 	}
 	
 	@PostMapping("/batch")
-	public ResponseDTO<List<Product>> createBatchProduct(@RequestBody Product[] productList) {
+	public ResponseDTO<List<Product>> createBatchProduct(@RequestBody Product[] productList) throws Exception {
 		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess, 
-																	productRepository.saveAll(Arrays.asList(productList)));
+					productService.saveProductBatch((Arrays.asList(productList))));
 		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
 		return responseDto;
-		
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseDTO<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) throws Exception {
-		Optional<Product> currentProduct = productRepository.findById(id);
-		return currentProduct.map(obj -> {
-					                obj = product;
-					        		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess, 
-					        																productRepository.save(obj));
-					        		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-					        		return responseDto;
-								})
-								.orElseThrow(() -> new ResourceNotFoundException(id));
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseDTO<Product> deleteProduct(@PathVariable Long id) throws Exception {
-		Optional<Product> currentProduct = productRepository.findById(id);
-		if(currentProduct.isPresent()) {
-			productRepository.deleteById(id);
-    		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess, currentProduct.get());
-			responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-			return responseDto;
-		} else {
-			throw new ResourceNotFoundException(id);
-		}
-	}
-	
-	@GetMapping("/recommendation/{userId}")
-	public ResponseDTO<List<Product>> getRecommendedProducts() {
-		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess, productRepository.findAll());
+		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess,
+				productService.updateWholeProduct(id, product));
 		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
+		return responseDto;
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseDTO<Boolean> deleteProduct(@PathVariable Long id) throws Exception {
+		ResponseDTO<Boolean> responseDto = new ResponseDTO<>(transactionStatusSuccess,
+				productService.deleteProductById(id));
+		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
+		return responseDto;
+	}
+
+	@GetMapping("/recommendation/{userId}")
+	public ResponseDTO<List<Product>> getRecommendedProducts(@PathVariable Long userId) throws Exception {
+		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(
+				productService.getProductRecommendation(userId));
 		return responseDto;
 	}
 }
