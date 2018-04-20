@@ -41,8 +41,8 @@ public class BrandService {
 	public Brand updateWholeBrand(Long id, Brand brand) throws Exception {
 		Optional<Brand> currentBrand = brandRepository.findById(id);
 		return currentBrand.map(thisBrand -> {
-			thisBrand = brand;
-			return brandRepository.save(thisBrand);
+			brand.setId(thisBrand.getId());
+			return brandRepository.save(brand);
 		}).orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
