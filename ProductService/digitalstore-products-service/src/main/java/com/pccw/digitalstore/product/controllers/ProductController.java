@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,81 +11,78 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pccw.digitalstore.product.dto.ResponseDTO;
 import com.pccw.digitalstore.product.models.Product;
 import com.pccw.digitalstore.product.services.ProductService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping("/products")
+@Api(value = "Digital Store Products API")
 public class ProductController {
-	
-	@Value("${spring.application.name}")
-	private String productServiceName;
-	private final static String serviceStatusUp = "UP";
-	private final static String transactionStatusSuccess = "SUCCESS";
-	
+
 	@Autowired
 	ProductService productService;
-	
-	@PostMapping("/")
-	public Product createProduct(@RequestBody Product product) throws Exception {
-		return productService.saveProduct(product);
+
+	@PostMapping(value = "/", produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Create single product", response = ResponseDTO.class)
+	public ResponseDTO<Product> createProduct(@RequestBody Product product) throws Exception {
+		return new ResponseDTO<Product>(productService.saveProduct(product));
 	}
-	
-	@GetMapping("/{id}")
+
+	@GetMapping(value = "/{id}", produces = "application/json")
+	@ApiOperation(value = "Fetch single product based on ID", response = ResponseDTO.class)
 	public ResponseDTO<Product> getProduct(@PathVariable Long id) throws Exception {
-		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess, productService.getProduct(id));
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-		return responseDto;
+		return new ResponseDTO<Product>(productService.getProduct(id));
 	}
-	
-	@GetMapping("/sku/{sku}")
+
+	@GetMapping(value = "/sku/{sku}", produces = "application/json")
+	@ApiOperation(value = "Fetch single product based on SKU", response = ResponseDTO.class)
 	public ResponseDTO<Product> getProductBySku(@PathVariable String sku) throws Exception {
-		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess,
-				productService.getProductBySku(sku));
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-		return responseDto;
+		return new ResponseDTO<Product>(productService.getProductBySku(sku));
 	}
-	
-	
-	@GetMapping("/all")
+
+	@GetMapping(value = "/all", produces = "application/json")
+	@ApiOperation(value = "Fetch all products stored", response = ResponseDTO.class)
 	public ResponseDTO<List<Product>> getAllProducts() throws Exception {
-		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess,
-				productService.getAllProducts());
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-		return responseDto;
+		return new ResponseDTO<List<Product>>(productService.getAllProducts());
 	}
-	
-	@PostMapping("/batch")
+
+	@PostMapping(value = "/batch", produces = "application/json")
+	@ApiOperation(value = "Create multiple products", response = ResponseDTO.class)
 	public ResponseDTO<List<Product>> createBatchProduct(@RequestBody Product[] productList) throws Exception {
-		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(transactionStatusSuccess, 
-					productService.saveProductBatch((Arrays.asList(productList))));
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-		return responseDto;
+		return new ResponseDTO<List<Product>>(productService.saveProductBatch((Arrays.asList(productList))));
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Update the whole detail of a product and preserve the ID", response = ResponseDTO.class)
 	public ResponseDTO<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) throws Exception {
-		ResponseDTO<Product> responseDto = new ResponseDTO<>(transactionStatusSuccess,
-				productService.updateWholeProduct(id, product));
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-		return responseDto;
+		return new ResponseDTO<Product>(productService.updateWholeProduct(id, product));
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Update the whole detail of a product and preserve the ID", response = ResponseDTO.class)
 	public ResponseDTO<Boolean> deleteProduct(@PathVariable Long id) throws Exception {
-		ResponseDTO<Boolean> responseDto = new ResponseDTO<>(transactionStatusSuccess,
-				productService.deleteProductById(id));
-		responseDto.addServiceStatus(productServiceName, serviceStatusUp);
-		return responseDto;
+		return new ResponseDTO<Boolean>(productService.deleteProductById(id));
 	}
 
-	@GetMapping("/recommendation/{userId}")
+	@GetMapping(value = "/recommendation/{userId}", produces = "application/json")
+	@ApiOperation(value = "Fetch list of recommended products based on user history purchase", response = ResponseDTO.class)
 	public ResponseDTO<List<Product>> getRecommendedProducts(@PathVariable Long userId) throws Exception {
-		ResponseDTO<List<Product>> responseDto = new ResponseDTO<>(
-				productService.getProductRecommendation(userId));
-		return responseDto;
+		return new ResponseDTO<List<Product>>(productService.getProductRecommendation(userId));
+	}
+
+	@GetMapping(value = "/recommendation/", produces = "application/json")
+	@ApiOperation(value = "Fetch list of recommended products based on user age and gender", response = ResponseDTO.class)
+	public ResponseDTO<List<Product>> getRecommendedProducts(
+			@RequestParam @ApiParam(value = "ID of the customer") Integer age, @RequestParam String gender)
+			throws Exception {
+		return new ResponseDTO<List<Product>>(productService.getProductRecommendationByUserMetrix(age, gender));
 	}
 }
