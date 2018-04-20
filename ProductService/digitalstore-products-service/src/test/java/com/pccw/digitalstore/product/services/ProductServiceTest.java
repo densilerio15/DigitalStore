@@ -30,7 +30,7 @@ public class ProductServiceTest {
     @TestConfiguration
     static class ProductServiceImplTestContextConfiguration {
         @Bean
-        public ProductService employeeService() {
+        public ProductService productService() {
             return new ProductServiceImpl();
         }
     }
