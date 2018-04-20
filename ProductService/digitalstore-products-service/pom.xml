@@ -6,7 +6,7 @@
 
 	<groupId>com.pccw.digitalstore.product</groupId>
 	<artifactId>digitalstore-products-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>digitalstore-products-service</name>
