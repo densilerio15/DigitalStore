@@ -1,0 +1,8 @@
+spring:
+ application:
+  name: digitalstore-db-service
+ profiles:
+  active: development
+  
+server:
+ port: 8881
