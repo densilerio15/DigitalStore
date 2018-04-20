@@ -24,45 +24,46 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/brand")
 @Api(value = "Digital Store Brand API")
 public class BrandController {
-	
+
 	@Autowired
 	BrandService brandService;
-	
+
 	@Autowired
-    private ModelMapper modelMapper;
-	
+	private ModelMapper modelMapper;
+
 	@GetMapping(value = "/{id}", produces = "application/json")
 	@ApiOperation(value = "Fetch single brand based on ID", response = ResponseDTO.class)
 	public ResponseDTO<Brand> getBrand(@PathVariable Long id) throws Exception {
 		return new ResponseDTO<Brand>(brandService.getBrand(id));
 	}
-	
-	@GetMapping(value = "/name/{id}", produces = "application/json")
+
+	@GetMapping(value = "/name/{brandName}", produces = "application/json")
 	@ApiOperation(value = "Fetch single brand based on brand name", response = ResponseDTO.class)
-	public ResponseDTO<Brand> getProductByName(@PathVariable String brandName) throws Exception {
+	public ResponseDTO<Brand> getProductByName(
+			@PathVariable String brandName) throws Exception {
 		return new ResponseDTO<Brand>(brandService.getBrandByName(brandName));
 	}
-	
+
 	@GetMapping(value = "/", produces = "application/json")
 	@ApiOperation(value = "Fetch all brand stored", response = ResponseDTO.class)
 	public ResponseDTO<List<Brand>> getAllBrands() throws Exception {
 		return new ResponseDTO<List<Brand>>(brandService.getAllBrand());
 	}
-	
+
 	@DeleteMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
 	@ApiOperation(value = "Delete one entry of brand with the specified ID", response = ResponseDTO.class)
 	public ResponseDTO<Boolean> deleteBrand(@PathVariable Long id) throws Exception {
 		return new ResponseDTO<Boolean>(brandService.deleteBrandById(id));
 	}
-	
+
 	@PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
 	@ApiOperation(value = "Update the whole detail of a brand and preserve the ID", response = ResponseDTO.class)
 	public ResponseDTO<Brand> updateProduct(@PathVariable Long id, @RequestBody BrandPutDTO brandDto) throws Exception {
 		return new ResponseDTO<Brand>(brandService.updateWholeBrand(id, convertToEntity(brandDto)));
 	}
-	
+
 	private Brand convertToEntity(BrandPutDTO brandDto) {
 		return modelMapper.map(brandDto, Brand.class);
 	}
-	
+
 }

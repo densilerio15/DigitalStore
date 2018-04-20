@@ -9,7 +9,5 @@ import com.pccw.digitalstore.brand.models.Brand;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
-	
 	Optional<Brand> findByName(String name);
-
 }
