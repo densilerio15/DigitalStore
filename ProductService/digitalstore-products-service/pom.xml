@@ -4,13 +4,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.pccw.digitalstore</groupId>
+	<groupId>com.pccw.digitalstore.product</groupId>
 	<artifactId>digitalstore-products-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>digitalstore-products-service</name>
-	<description>Demo project for Spring Boot</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -61,6 +60,18 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- Springfox implementation for swagger -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.8.0</version>
+		</dependency>
+		<!-- Springfox for Swagger UI rendering -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.8.0</version>
+		</dependency>
 		<!-- AssertJ for Unit tests -->
 		<dependency>
 			<groupId>org.assertj</groupId>
@@ -68,8 +79,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
-		<dependencyManagement>
+
+	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -109,4 +120,5 @@
 		</repository>
 	</repositories>
 
+	<description>Product Services</description>
 </project>
