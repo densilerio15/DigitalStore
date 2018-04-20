@@ -29,7 +29,7 @@ public class SwaggerConfig {
 	private ApiInfo getApiInfo() {
 		Contact contact = new Contact("PCCW", "http://digitalstore.pccw.com", "pccw@pccw.com");
 		return new ApiInfoBuilder()
-				.title("Brand Service API")
+				.title("Category Service API")
 				.description("Contains all the processes involved with category services")
 				.version("v1")
 				.contact(contact)

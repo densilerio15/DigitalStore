@@ -7,9 +7,7 @@ import com.pccw.digitalstore.product.models.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	
 	Product findBySku(String sku);
 	
 	Product findByName(String name);
-	
 }
