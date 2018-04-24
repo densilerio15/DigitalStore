@@ -2,10 +2,13 @@ package com.pccw.digitalstore.product.controllers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pccw.digitalstore.product.dto.ProductImageDTO;
 import com.pccw.digitalstore.product.dto.ResponseDTO;
 import com.pccw.digitalstore.product.models.Product;
 import com.pccw.digitalstore.product.services.ProductService;
@@ -29,17 +33,24 @@ public class ProductController {
 
 	@Autowired
 	ProductService productService;
+	
 
 	@PostMapping(value = "/", produces = "application/json", consumes = "application/json")
 	@ApiOperation(value = "Create single product", response = ResponseDTO.class)
 	public ResponseDTO<Product> createProduct(@RequestBody Product product) throws Exception {
 		return new ResponseDTO<Product>(productService.saveProduct(product));
 	}
+	
+	@PostMapping(value = "/image", produces = "application/json", consumes = "application/json", headers = "content-type=multipart/form-data")
+	@ApiOperation(value = "Create single product with image", response = ResponseDTO.class)
+	public ResponseDTO<Product> createProductWithImage(@ModelAttribute ProductImageDTO product) throws Exception {
+		return new ResponseDTO<Product>(productService.saveProductWithImage((product)));
+	}
 
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/{productId}", produces = "application/json")
 	@ApiOperation(value = "Fetch single product based on ID", response = ResponseDTO.class)
-	public ResponseDTO<Product> getProduct(@PathVariable Long id) throws Exception {
-		return new ResponseDTO<Product>(productService.getProduct(id));
+	public ResponseDTO<Product> getProduct(@PathVariable Long productId) throws Exception {
+		return new ResponseDTO<Product>(productService.getProduct(productId));
 	}
 
 	@GetMapping(value = "/sku/{sku}", produces = "application/json")
@@ -60,16 +71,17 @@ public class ProductController {
 		return new ResponseDTO<List<Product>>(productService.saveProductBatch((Arrays.asList(productList))));
 	}
 
-	@PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
+	@PutMapping(value = "/{productId}", produces = "application/json", consumes = "application/json")
 	@ApiOperation(value = "Update the whole detail of a product and preserve the ID", response = ResponseDTO.class)
-	public ResponseDTO<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) throws Exception {
-		return new ResponseDTO<Product>(productService.updateWholeProduct(id, product));
+	public ResponseDTO<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product)
+			throws Exception {
+		return new ResponseDTO<Product>(productService.updateWholeProduct(productId, product));
 	}
 
-	@DeleteMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
+	@DeleteMapping(value = "/{productId}", produces = "application/json", consumes = "application/json")
 	@ApiOperation(value = "Update the whole detail of a product and preserve the ID", response = ResponseDTO.class)
-	public ResponseDTO<Boolean> deleteProduct(@PathVariable Long id) throws Exception {
-		return new ResponseDTO<Boolean>(productService.deleteProductById(id));
+	public ResponseDTO<Boolean> deleteProduct(@PathVariable Long productId) throws Exception {
+		return new ResponseDTO<Boolean>(productService.deleteProductById(productId));
 	}
 
 	@GetMapping(value = "/recommendation/{userId}", produces = "application/json")
@@ -85,4 +97,12 @@ public class ProductController {
 			throws Exception {
 		return new ResponseDTO<List<Product>>(productService.getProductRecommendationByUserMetrix(age, gender));
 	}
+
+	@PatchMapping(value = "/{productId}", consumes = "application/json", produces = "application/json")
+	@ApiOperation(value = "Update each product fields and retain the product ID and SKU", response = ResponseDTO.class)
+	public ResponseDTO<Product> updateProductFields(@PathVariable Long productId,
+			@RequestBody Map<String, Object> fields) throws Exception {
+		return new ResponseDTO<Product>(productService.updateProductFields(productId, fields));
+	}
+	
 }

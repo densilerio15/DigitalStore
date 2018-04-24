@@ -1,11 +1,15 @@
 package com.pccw.digitalstore.product.services;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.pccw.digitalstore.product.dto.ProductImageDTO;
 import com.pccw.digitalstore.product.exception.ResourceNotFoundException;
 import com.pccw.digitalstore.product.models.Product;
 import com.pccw.digitalstore.product.repositories.ProductRepository;
@@ -15,6 +19,14 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	ProductRepository productRepository;
+	
+	@Autowired
+	@Qualifier("fileSystemStroageService")
+	StorageService storageService;
+
+	
+	@Autowired
+	ModelMapper modelMapper;
 
 	@Override
 	public Product saveProduct(Product product) {
@@ -80,5 +92,25 @@ public class ProductServiceImpl implements ProductService {
 			return true;
 		}).orElseThrow(() -> new ResourceNotFoundException(id));
 	}
+	
+	@Override
+	public Product updateProductFields(Long id, Map<String, Object> fields) throws Exception {
+		//TODO: mapped object is replacing fields that is not include in fields map
+		Product product = this.getProduct(id);
+		Product updatedProduct = modelMapper.map(fields, Product.class);
+		updatedProduct.setId(product.getId());
+		updatedProduct.setSku(product.getSku());
+		return productRepository.save(updatedProduct);
+	}
 
+	@Override
+//	@Transactional(rollbackFor = EmptyImageExcepton.class)
+	//TODO: Add Transactional when saving of image failed to rollback the product saved to the DB
+	public Product saveProductWithImage(ProductImageDTO product) throws Exception {
+        Product productToSave = modelMapper.map(product, Product.class);
+        productRepository.save(productToSave);
+        String imageFileName = storageService.store(product.getImage(), productToSave);
+        productToSave.setImagePath(imageFileName);
+        return  productRepository.save(productToSave);
+	}
 }

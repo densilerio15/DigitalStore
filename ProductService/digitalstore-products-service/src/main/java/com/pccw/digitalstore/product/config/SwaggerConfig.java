@@ -1,4 +1,4 @@
-package com.pccw.digitalstore.product;
+package com.pccw.digitalstore.product.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
