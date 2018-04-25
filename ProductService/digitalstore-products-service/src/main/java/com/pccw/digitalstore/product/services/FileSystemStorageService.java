@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,17 +25,20 @@ public class FileSystemStorageService implements StorageService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemStorageService.class);
 	
 	@Value("${file.system.base.path}")
-	private String BASE_PATH;
+	private String productsPath;
 	
 	ApplicationHome home = new ApplicationHome(DigitalstoreProductsServiceApplication.class);
+	
+	//Will get the path where the jar file is deployed
+	private final String BASE_PATH = new File(".").getAbsolutePath();
 
 	@Override
 	public String store(MultipartFile file, Product product) throws Exception {
 		if(file == null || file.isEmpty()) {
-			throw new ImageNotFoundException();	
+			throw new ImageNotFoundException("File given is empty.");	
 		}
 		String originalFileName = file.getOriginalFilename();
-
+		
 		LOGGER.debug("Start storing file process");
 		LOGGER.debug("File details: ");
 		LOGGER.debug("File content type: " + file.getContentType());
@@ -42,11 +46,12 @@ public class FileSystemStorageService implements StorageService {
 		LOGGER.debug("File original name : " + originalFileName);
 		LOGGER.debug("File size : " + file.getSize());
 
-		String pathToImages = home.getDir().getCanonicalPath().concat(BASE_PATH).concat(String.valueOf(product.getId()))
-				.concat(File.separator).concat(file.getOriginalFilename());
-		Path directory = Paths.get(pathToImages);
-		LOGGER.debug("Real Path: {}", pathToImages);
-		// Check if file directory exist
+		String pathToImage = BASE_PATH.concat(productsPath).concat(String.valueOf(product.getId())).concat(File.separator)
+				.concat(file.getOriginalFilename());
+		Path directory = Paths.get(pathToImage);
+		
+		LOGGER.debug("Real Path: {}", pathToImage);
+
 		if (!directory.toFile().exists()) {
 			LOGGER.debug("File path does not exist will create new directory at {}", directory.getParent());
 			Files.createDirectories(directory.getParent());
@@ -63,16 +68,24 @@ public class FileSystemStorageService implements StorageService {
 	}
 
 	@Override
-	public Resource loadAsResouce(String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+	public Resource loadAsResouce(Long productId, String fileName) throws Exception {
+		//Search within the product IS as the folder then search the filename given
+		Path imagePath = Paths.get(BASE_PATH.concat(productsPath)).resolve(String.valueOf(productId)).resolve(fileName);
+		LOGGER.debug("Will get resource at path {}", imagePath);
+		Resource resource = new UrlResource(imagePath.toUri());
+		
+		if(resource.exists() || resource.isReadable()) {
+			return resource;
+		} else {
+			throw new ImageNotFoundException("Could not read file: " + fileName);
+		}
 	}
-	
+
 	private boolean checkFilePathPermission(File file) throws Exception {
 		if(file != null && file.canExecute() && file.canRead() && file.canWrite()) {
 			return true;
 		}
-		throw new FilePermissionException();
+		throw new FilePermissionException("Cannot Read/Create file, Please see permission rules");
 	}
 
 }

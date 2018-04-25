@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,7 +37,6 @@ public class ProductController {
 
 	@Autowired
 	ProductService productService;
-	
 
 	@PostMapping(value = "/", produces = "application/json", consumes = "application/json")
 	@ApiOperation(value = "Create single product", response = ResponseDTO.class)
@@ -45,6 +48,14 @@ public class ProductController {
 	@ApiOperation(value = "Create single product with image", response = ResponseDTO.class)
 	public ResponseDTO<Product> createProductWithImage(@ModelAttribute ProductImageDTO product) throws Exception {
 		return new ResponseDTO<Product>(productService.saveProductWithImage((product)));
+	}
+	
+	@GetMapping(value = "/{productId}/image/{fileName:.+}", produces = MediaType.IMAGE_JPEG_VALUE)
+	@ApiOperation(value = "Fetch single product based on ID", response = ResponseDTO.class)
+	public ResponseEntity<Resource> serveProductImage(@PathVariable Long productId, @PathVariable String fileName) throws Exception {
+		Resource file = productService.getProductImage(productId, fileName);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
 	}
 
 	@GetMapping(value = "/{productId}", produces = "application/json")

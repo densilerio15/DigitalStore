@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.pccw.digitalstore.product.dto.ProductImageDTO;
@@ -112,5 +113,10 @@ public class ProductServiceImpl implements ProductService {
         String imageFileName = storageService.store(product.getImage(), productToSave);
         productToSave.setImagePath(imageFileName);
         return  productRepository.save(productToSave);
+	}
+	
+	@Override
+	public Resource getProductImage(Long productId, String fileName) throws Exception {
+		return storageService.loadAsResouce(productId, fileName);
 	}
 }

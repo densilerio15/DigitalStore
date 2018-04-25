@@ -13,6 +13,6 @@ public interface StorageService {
 	
 	public Path load(String fileName);
 	
-	public Resource loadAsResouce(String fileName);
+	public Resource loadAsResouce(Long productId, String fileName) throws Exception;
 
 }
