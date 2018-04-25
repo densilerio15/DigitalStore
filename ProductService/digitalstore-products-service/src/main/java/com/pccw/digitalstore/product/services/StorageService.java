@@ -1,5 +1,7 @@
 package com.pccw.digitalstore.product.services;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 
 import org.springframework.core.io.Resource;
@@ -9,10 +11,11 @@ import com.pccw.digitalstore.product.models.Product;
 
 public interface StorageService {
 	
-	public String store(MultipartFile file, Product product) throws Exception;
+	String store(MultipartFile file, Product product) throws IOException;
 	
-	public Path load(String fileName);
+	Path load(String fileName);
 	
-	public Resource loadAsResouce(Long productId, String fileName) throws Exception;
-
+	Resource loadAsResouce(Long productId, String fileName) throws MalformedURLException;
+	
+	void deleteAll() throws IOException ;
 }
