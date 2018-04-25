@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/products")
 @Api(value = "Digital Store Products API")
 public class ProductController {
-
+	
 	@Autowired
 	ProductService productService;
 
@@ -90,7 +90,7 @@ public class ProductController {
 	}
 
 	@DeleteMapping(value = "/{productId}", produces = "application/json", consumes = "application/json")
-	@ApiOperation(value = "Update the whole detail of a product and preserve the ID", response = ResponseDTO.class)
+	@ApiOperation(value = "Delete product", response = ResponseDTO.class)
 	public ResponseDTO<Boolean> deleteProduct(@PathVariable Long productId) throws Exception {
 		return new ResponseDTO<Boolean>(productService.deleteProductById(productId));
 	}
