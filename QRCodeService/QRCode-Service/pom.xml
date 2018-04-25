@@ -43,7 +43,27 @@
     <artifactId>spring-messaging</artifactId>
     <version>4.0.0.RELEASE</version>
 </dependency>
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.8.0</version>
+</dependency>
+
+	<dependency>
+		<!--  Springfox implementation for swagger -->
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		
+		<dependency>
+		<!-- Springfox for Swagger UI rendering -->
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.7.0</version>
+		</dependency>
 	</dependencies>
+	
 
 	<build>
 		<plugins>
